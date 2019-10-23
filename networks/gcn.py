@@ -17,7 +17,7 @@ class GraphConvolution(nn.Module):
             self.bias = Parameter(torch.FloatTensor(out_features))
         else:
             self.register_parameter('bias',None)
-        # self.reset_parameters()
+        self.reset_parameters()
 
     def reset_parameters(self):
         # stdv = 1./math.sqrt(self.weight(1))
@@ -27,10 +27,10 @@ class GraphConvolution(nn.Module):
         #     self.bias.data.uniform_(-stdv,stdv)
 
     def forward(self, input,adj=None,relu=False):
-        support = torch.matmul(input,self.weight)
+        support = torch.matmul(input, self.weight)
         # print(support.size(),adj.size())
         if adj is not None:
-            output = torch.matmul(adj,support)
+            output = torch.matmul(adj, support)
         else:
             output = support
         # print(output.size())
@@ -53,7 +53,7 @@ class Featuremaps_to_Graph(nn.Module):
         super(Featuremaps_to_Graph, self).__init__()
         self.pre_fea = Parameter(torch.FloatTensor(input_channels,nodes))
         self.weight = Parameter(torch.FloatTensor(input_channels,hidden_layers))
-        # self.reset_parameters()
+        self.reset_parameters()
 
     def forward(self, input):
         n,c,h,w = input.size()
@@ -84,7 +84,7 @@ class Featuremaps_to_Graph_transfer(nn.Module):
         self.weight = Parameter(torch.FloatTensor(input_channels,hidden_layers))
         self.pre_fea_transfer = nn.Sequential(*[nn.Linear(source_nodes, source_nodes),nn.LeakyReLU(True),
                                                 nn.Linear(source_nodes, nodes), nn.LeakyReLU(True)])
-        # self.reset_parameters()
+        self.reset_parameters()
 
     def forward(self, input, source_pre_fea):
         self.pre_fea.data = self.pre_fea_learn(source_pre_fea)
@@ -97,7 +97,7 @@ class Featuremaps_to_Graph_transfer(nn.Module):
         fea_node = torch.matmul(input1,self.pre_fea) # n x hw x n_classes
         weight_node = torch.matmul(input1,self.weight) # n x hw x hidden_layer
         # softmax fea_node
-        fea_node = F.softmax(fea_node,dim=-1)
+        fea_node = F.softmax(fea_node,dim=1)
         # print(fea_node.size(),weight_node.size())
         graph_node = F.relu(torch.matmul(fea_node.transpose(1,2),weight_node))
         return graph_node # n x n_class x hidden_layer
@@ -112,7 +112,7 @@ class Graph_to_Featuremaps(nn.Module):
         super(Graph_to_Featuremaps, self).__init__()
         self.node_fea = Parameter(torch.FloatTensor(input_channels+hidden_layers,1))
         self.weight = Parameter(torch.FloatTensor(hidden_layers,output_channels))
-        # self.reset_parameters()
+        self.reset_parameters()
 
     def reset_parameters(self):
         for ww in self.parameters():
@@ -145,6 +145,9 @@ class Graph_to_Featuremaps(nn.Module):
         new_node = torch.matmul(new_fea, self.node_fea) # batch x hw x nodes x 1
         new_weight = torch.matmul(input, self.weight)  # batch x node x channel
         new_node = new_node.view(batch, hi*wi, nodes)
+        # 0721
+        new_node = F.softmax(new_node, dim=-1)
+        #
         feature_out = torch.matmul(new_node,new_weight)
         # print(feature_out.size())
         feature_out = feature_out.transpose(2,3).contiguous().view(res_feature.size())
@@ -157,7 +160,7 @@ class Graph_to_Featuremaps_savemem(nn.Module):
         self.node_fea_for_res = Parameter(torch.FloatTensor(input_channels, 1))
         self.node_fea_for_hidden = Parameter(torch.FloatTensor(hidden_layers, 1))
         self.weight = Parameter(torch.FloatTensor(hidden_layers,output_channels))
-        # self.reset_parameters()
+        self.reset_parameters()
 
     def reset_parameters(self):
         for ww in self.parameters():
@@ -194,6 +197,9 @@ class Graph_to_Featuremaps_savemem(nn.Module):
         # new_node = torch.matmul(new_fea, self.node_fea) # batch x hw x nodes x 1
         new_weight = torch.matmul(input, self.weight) # batch x node x channel
         new_node = new_node.view(batch, hi*wi, nodes)
+        # 0721
+        new_node = F.softmax(new_node, dim=-1)
+        #
         feature_out = torch.matmul(new_node,new_weight)
         # print(feature_out.size())
         feature_out = feature_out.transpose(2,3).contiguous().view(res_feature.size())
@@ -266,6 +272,8 @@ class Graph_trans(nn.Module):
 if __name__ == '__main__':
 
     graph = torch.randn((7,128))
-    pred = (torch.rand((7,7))*7).int()
+    en = GraphConvolution(128,128)
+    a = en.forward(graph)
+    print(a)
     # a = en.forward(graph,pred)
     # print(a.size())
