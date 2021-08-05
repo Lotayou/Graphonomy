@@ -5,6 +5,7 @@ This repository contains the code for the paper:
 [**Graphonomy: Universal Human Parsing via Graph Transfer Learning**](https://arxiv.org/abs/1904.04536)
 ,Ke Gong, Yiming Gao, Xiaodan Liang, Xiaohui Shen, Meng Wang, Liang Lin.
 
+
 # Environment and installation
 + Pytorch = 0.4.0
 + torchvision
@@ -80,13 +81,13 @@ Specify the specific model. And we provide the final model that you can download
 
 |Model|Google Cloud|Baidu Yun|
 |--------|--------------|-----------|
-|Graphonomy(CIHP)| [Download](https://drive.google.com/file/d/1cwEhlYEzC7jIShENNLnbmcBR0SNlZDE6/view?usp=sharing)| Available soon|
+|Graphonomy(CIHP)| [Download](https://drive.google.com/file/d/1E_V_gVDWfAJFPfe-LLu2RQaYQMdhjv9h/view?usp=sharing)| Available soon|
 
 **CIHP trained model**
 
 |Model|Google Cloud|Baidu Yun|
 |--------|--------------|-----------|
-|Graphonomy(PASCAL)| [Download](https://drive.google.com/file/d/1O9YD4kHgs3w2DUcWxtHiEFyWjCBeS_Vc/view?usp=sharing)| Available soon|
+|Graphonomy(PASCAL)| [Download](https://drive.google.com/file/d/1eUe18HoH05p0yFUd_sN6GXdTj82aW0m9/view?usp=sharing)| Available soon|
 
 **Universal trained model**
 
@@ -120,3 +121,4 @@ if you have any questions about this repo, please feel free to contact
 + Self-supervised Structure-sensitive Learning [SSL](https://github.com/Engineering-Course/LIP_SSL)
 + Joint Body Parsing & Pose Estimation Network  [JPPNet](https://github.com/Engineering-Course/LIP_JPPNet)
 + Instance-level Human Parsing via Part Grouping Network [PGN](https://github.com/Engineering-Course/CIHP_PGN)
++ Graphonomy: Universal Image Parsing via Graph Reasoning and Transfer [paper](https://arxiv.org/abs/2101.10620) [code](https://github.com/Gaoyiminggithub/Graphonomy-Panoptic)
